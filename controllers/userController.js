@@ -25,7 +25,8 @@ const loginUser = async (req, res) => {
       return res.json({ message: "Invalid Credentials", success: false });
     }
   } catch (error) {
-    res.json({ message: "Invalid Credentials", success: false });
+    console.log(error);
+    res.json({ message: "Something went wrong", success: false });
   }
 };
 
