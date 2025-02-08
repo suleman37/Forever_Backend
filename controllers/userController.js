@@ -10,7 +10,24 @@ const createtoken = (id) => {
   return token;
 };
 
-const loginUser = async (req, res) => {};
+const loginUser = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await userModel.findOne({ email });
+    if (!user) {
+      return res.json({ message: "User Not Found", success: false });
+    }
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (isMatch) {
+      const Token = createtoken(user._id);
+      res.json({ message: "Login Success", success: true, Token });
+    } else {
+      return res.json({ message: "Invalid Credentials", success: false });
+    }
+  } catch (error) {
+    res.json({ message: "Invalid Credentials", success: false });
+  }
+};
 
 const registerUser = async (req, res) => {
   try {
