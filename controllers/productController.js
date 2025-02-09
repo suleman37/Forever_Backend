@@ -1,5 +1,5 @@
-import { v2 as cloudinary } from 'cloudinary';
-import productModel  from '../modals/productModel.js';
+import { v2 as cloudinary } from "cloudinary";
+import productModel from "../modals/productModel.js";
 
 const AddProduct = async (req, res) => {
   try {
@@ -23,7 +23,9 @@ const AddProduct = async (req, res) => {
 
     const imagesUrl = await Promise.all(
       images.map(async (item) => {
-        const result = await cloudinary.uploader.upload(item.path, { resource_type: 'image' });
+        const result = await cloudinary.uploader.upload(item.path, {
+          resource_type: "image",
+        });
         return result.secure_url;
       })
     );
@@ -35,12 +37,11 @@ const AddProduct = async (req, res) => {
       price: Number(price),
       category,
       subCategory,
-      sizes : JSON.parse(sizes),
-      bestSeller : bestSeller === "true" ? true :false,
-      images: imagesUrl,
-      date: Date.now()
+      sizes: JSON.parse(sizes),
+      bestSeller: bestSeller === "true" ? true : false,
+      image: imagesUrl,
+      date: Date.now(),
     };
-    console.log("ProductData : ", ProductData)
     const product = new productModel(ProductData);
     await product.save();
     res.json({ success: true, message: "Product added successfully" });
@@ -59,16 +60,29 @@ const listProduct = async (req, res) => {
     res.json({ success: false, message: error.message });
   }
 };
+
 const removeProduct = async (req, res) => {
   try {
-    const { _id } = req.body;
-    await productModel.findByIdAndDelete(_id);
+    const { id } = req.body;
+    console.log(id);
+    await productModel.findByIdAndDelete(id);
     res.json({ success: true, message: "Product deleted successfully" });
   } catch (error) {
     console.log(error);
     res.json({ success: false, message: error.message });
-  } 
+  }
 };
-const singleProduct = async (req, res) => {};
+
+const singleProduct = async (req, res) => {
+
+try {
+  const {id} = req.body;
+  const product = await productModel.findById(id);
+  res.json({success:true,product});
+} catch (error) {
+  console.log(error);
+  res.json({ success: false, message: error.message });
+}
+};
 
 export { AddProduct, listProduct, removeProduct, singleProduct };
