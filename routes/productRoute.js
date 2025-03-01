@@ -21,7 +21,7 @@ productRoute.post(
   ]),
   AddProduct
 ); 
-productRoute.get("/list", listProduct);
+productRoute.get("/list" , listProduct);
 productRoute.post("/remove", removeProduct);
 productRoute.post("/single", singleProduct);
 
