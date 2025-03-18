@@ -4,8 +4,12 @@ const addToCart = async (req, res) => {
   try {
     const { userId, itemId, size } = req.body;
     const userData = await userModel.findById(userId);
-    const cartData = userData.cartData || {};
 
+    if (!userData) {
+      return res.json({ success: false, message: "User not found" });
+    }
+
+    const cartData = userData.cartData || {};
     cartData[itemId] = cartData[itemId] || {};
     cartData[itemId][size] = (cartData[itemId][size] || 0) + 1;
 
