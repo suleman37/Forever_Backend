@@ -4,9 +4,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 const createtoken = (id) => {
-  const token = jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: "1d",
-  });
+  const token = jwt.sign({ id }, process.env.JWT_SECRET );
   return token;
 };
 
