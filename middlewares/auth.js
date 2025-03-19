@@ -5,7 +5,7 @@ const authUser = async (req, res, next) => {
   const token = authHeader && authHeader.split(' ')[1];
 
   if (!token) {
-    return res.json({ success: false, message: 'Not Authorized Login Again' });
+    return res.status(401).json({ success: false, message: 'Token not provided' });
   }
 
   try {
@@ -14,7 +14,7 @@ const authUser = async (req, res, next) => {
     next();
   } catch (error) {
     console.log(error);
-    res.json({ success: false, message: error.message });
+    res.status(403).json({ success: false, message: 'Invalid or expired token' });
   }
 };
 
