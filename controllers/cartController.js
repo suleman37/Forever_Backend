@@ -27,7 +27,7 @@ const updateCart = async (req, res) => {
     const userData = await userModel.findById(userId);
     const cartData = userData.cartData || {};
 
-    if (cartData[itemId]) {
+    if (cartData[itemId] && cartData[itemId][size] !== undefined) {
       cartData[itemId][size] = quantity;
       await userModel.findByIdAndUpdate(userId, { cartData });
       res.json({ success: true, message: "Cart Updated" });
@@ -45,9 +45,6 @@ const getUserCart = async (req, res) => {
     const { userId } = req.body;
     const userData = await userModel.findById(userId);
     const cartData = userData.cartData || {};
-
-    console.log("User Cart Data:", cartData);
-
     res.json({ success: true, cartData });
   } catch (error) {
     console.error(error);
