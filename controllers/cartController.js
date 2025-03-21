@@ -23,14 +23,44 @@ const addToCart = async (req, res) => {
 
 const updateCart = async (req, res) => {
   try {
+    console.log("Request Body Update:", req.body); 
     const { userId, itemId, size, quantity } = req.body;
     const userData = await userModel.findById(userId);
     const cartData = userData.cartData || {};
+    console.log("itemId", itemId);
 
     if (cartData[itemId] && cartData[itemId][size] !== undefined) {
       cartData[itemId][size] = quantity;
       await userModel.findByIdAndUpdate(userId, { cartData });
       res.json({ success: true, message: "Cart Updated" });
+    } else {
+      res.json({ success: false, message: "Item not found in cart" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.json({ success: false, message: error.message });
+  }
+};
+
+const deleteCartItem = async (req, res) => {
+  try {
+    console.log("Request Body delete:", req.body); 
+    const { userId, itemId, size } = req.body;
+    console.log("Received userId:", userId);
+    console.log("Received itemId:", itemId);
+    console.log("Received size:", size);
+
+    const userData = await userModel.findById(userId);
+    const cartData = userData.cartData || {};
+    console.log("itemId", itemId);
+
+    if (cartData[itemId] && cartData[itemId][size] !== undefined) {
+      delete cartData[itemId][size];
+      if (Object.keys(cartData[itemId]).length === 0) {
+        delete cartData[itemId];
+      }
+      await userModel.findByIdAndUpdate(userId, { cartData });
+      res.json({ success: true, message: "Item deleted from cart" });
     } else {
       res.json({ success: false, message: "Item not found in cart" });
     }
@@ -52,4 +82,4 @@ const getUserCart = async (req, res) => {
   }
 };
 
-export { addToCart, updateCart, getUserCart };
+export { addToCart, updateCart, getUserCart, deleteCartItem };
